@@ -19,6 +19,7 @@ near_sdk::setup_alloc!();
 pub struct Contract {
     token: FungibleToken,
     owner: AccountId,
+    dao: AccountId,
     pending_ft_rewards: LookupMap<AccountId, Balance>,
 }
 
@@ -27,11 +28,12 @@ const DATA_IMAGE_ICON: &str = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
 #[near_bindgen]
 impl Contract {
     #[init]
-    pub fn new(owner: ValidAccountId, initial_supply: U128) -> Self {
+    pub fn new(owner: ValidAccountId, dao: ValidAccountId, initial_supply: U128) -> Self {
         assert!(!env::state_exists(), "Already initialized");
         let mut contract = Self {
             token: FungibleToken::new(b"t".to_vec()),
             owner: owner.as_ref().clone(),
+            dao: dao.as_ref().clone(),
             pending_ft_rewards: LookupMap::new(b"r"),
         };
         let amount: Balance = initial_supply.into();
@@ -42,7 +44,9 @@ impl Contract {
     }
 
     pub fn add_pending_ft_rewards(&mut self, rewards: Vec<(ValidAccountId, U128)>) {
-        assert_eq!(env::signer_account_id(), self.owner, "{}", errors::ERR01_UNAUTHORIZED);
+        if env::signer_account_id() != self.owner && env::signer_account_id() != self.dao {
+            panic!("{}", errors::ERR01_UNAUTHORIZED)
+        }
         for reward in rewards {
             let id = reward.0.to_string();
             let prev = self.pending_ft_rewards.get(&id).unwrap_or_default();
@@ -55,7 +59,9 @@ impl Contract {
     }
 
     pub fn set_pending_ft_rewards(&mut self, rewards: Vec<(ValidAccountId, U128)>) {
-        assert_eq!(env::signer_account_id(), self.owner, "{}", errors::ERR01_UNAUTHORIZED);
+        if env::signer_account_id() != self.owner && env::signer_account_id() != self.dao {
+            panic!("{}", errors::ERR01_UNAUTHORIZED)
+        }
         for reward in rewards {
             let id = reward.0.to_string();
             self.pending_ft_rewards.insert(&id, &reward.1 .0);
@@ -91,7 +97,7 @@ impl FungibleTokenMetadataProvider for Contract {
             icon: Some(DATA_IMAGE_ICON.to_string()),
             reference: None,
             reference_hash: None,
-            decimals: 24,
+            decimals: 18,
         }
     }
 }
@@ -120,7 +126,7 @@ mod tests {
     fn test_new() {
         let mut context = get_context(accounts(1));
         testing_env!(context.build());
-        let contract = Contract::new(accounts(1), INITIAL_SUPPLY.into());
+        let contract = Contract::new(accounts(1), accounts(5), INITIAL_SUPPLY.into());
         testing_env!(context.is_view(true).build());
         assert_eq!(contract.ft_total_supply().0, INITIAL_SUPPLY);
         assert_eq!(contract.ft_balance_of(accounts(1)).0, INITIAL_SUPPLY);
@@ -253,7 +259,7 @@ mod tests {
     fn setup_contract() -> (VMContextBuilder, Contract) {
         let mut context = get_context(accounts(2));
         testing_env!(context.build());
-        let mut contract = Contract::new(accounts(2), INITIAL_SUPPLY.into());
+        let mut contract = Contract::new(accounts(2), accounts(5), INITIAL_SUPPLY.into());
         testing_env!(context
             .storage_usage(env::storage_usage())
             .attached_deposit(contract.storage_balance_bounds().min.into())
