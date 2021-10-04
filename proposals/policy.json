@@ -1,0 +1,50 @@
+{
+  "roles": [
+    {
+      "name": "council",
+      "kind": {
+        "Group": ["marior.near", "within4d45.near", "aliaksandrh.near"]
+      },
+      "permissions": [
+        "*:VoteReject",
+        "*:VoteRemove",
+        "*:VoteApprove",
+        "*:AddProposal",
+        "*:Finalize"
+      ],
+      "vote_policy": {}
+    },
+    {
+      "name": "community",
+      "kind": {
+        "Group": [
+          "akidi.near",
+          "pattara.near",
+          "sukrucildirr.near",
+          "duyskye.near",
+          "orztirrstudio.near",
+          "chro.near",
+          "ratatoeskr.near",
+          "p0k.near",
+          "Kanzy99.near",
+          "rejinderi.near",
+          "kcpesce.near",
+          "simeon4real.near",
+          "dylantse.near",
+          "isaaap.near"
+        ]
+      },
+      "permissions": ["*:VoteReject", "*:VoteRemove", "*:VoteApprove"],
+      "vote_policy": {}
+    }
+  ],
+  "default_vote_policy": {
+    "weight_kind": "RoleWeight",
+    "quorum": "0",
+    "threshold": [1, 2]
+  },
+  "proposal_bond": "1000000000000000000000000",
+  "proposal_period": "604800000000000",
+  "bounty_bond": "1000000000000000000000000",
+  "bounty_forgiveness_period": "86400000000000"
+}
