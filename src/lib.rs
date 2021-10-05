@@ -301,7 +301,9 @@ mod tests {
         use std::{fs, path::Path};
 
         let airdrop_path = Path::new("proposals/airdrop");
-        fs::remove_dir_all(airdrop_path).unwrap();
+        if airdrop_path.exists() {
+            fs::remove_dir_all(airdrop_path).unwrap();
+        }
         fs::create_dir_all(airdrop_path).unwrap();
 
         let max_deposit_size = 150;
