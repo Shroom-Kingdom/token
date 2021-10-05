@@ -31,10 +31,31 @@
           "kcpesce.near",
           "simeon4real.near",
           "dylantse.near",
-          "isaaap.near"
+          "isaaap.near",
+          "clasiedan.near",
+          "budvar.near",
+          "duong5951.near",
+          "emujavier.near",
+          "sweetierick.near",
+          "i12besam.near",
+          "maximal20.near",
+          "loynguyen1305.near",
+          "noleyustisia.near",
+          "ironbank.near",
+          "bp_14.near",
+          "edzer.near",
+          "zhouzihang.near",
+          "sanketn81.near",
+          "linhdh.near",
+          "sungntung.near"
         ]
       },
-      "permissions": ["*:VoteReject", "*:VoteRemove", "*:VoteApprove"],
+      "permissions": [
+        "*:VoteReject",
+        "*:VoteRemove",
+        "*:VoteApprove",
+        "*:Finalize"
+      ],
       "vote_policy": {}
     }
   ],
