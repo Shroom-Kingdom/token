@@ -11,6 +11,9 @@ crate-type = ["cdylib", "rlib"]
 near-sdk = "3.1.0"
 near-contract-standards = "3.1.1"
 
+[dev-dependencies]
+near-primitives = "0.1.0-pre.1"
+
 [profile.release]
 codegen-units = 1
 opt-level = "z"
