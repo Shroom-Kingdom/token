@@ -100,15 +100,6 @@ impl Contract {
         }
     }
 
-    pub fn register_accounts_for_airdrop(&mut self, #[serializer(borsh)] rewards: AirdropRewards) {
-        for reward in rewards.0 {
-            let id = reward.account_id.to_string();
-            if !self.token.accounts.contains_key(&id) {
-                self.token.internal_register_account(&id);
-            }
-        }
-    }
-
     #[payable]
     pub fn airdrop(&mut self, #[serializer(borsh)] rewards: AirdropRewards) {
         if env::predecessor_account_id() != self.owner && env::predecessor_account_id() != self.dao
@@ -116,7 +107,11 @@ impl Contract {
             panic!("{}", errors::ERR01_UNAUTHORIZED)
         }
         for reward in rewards.0 {
-            self.token.internal_deposit(&reward.account_id.into(), reward.amount.0);
+            let id = reward.account_id.to_string();
+            if !self.token.accounts.contains_key(&id) {
+                self.token.internal_register_account(&id);
+            }
+            self.token.internal_deposit(&id, reward.amount.0);
         }
     }
 }
@@ -309,20 +304,7 @@ mod tests {
         }
         fs::create_dir_all(airdrop_path).unwrap();
 
-        let max_deposit_size = 150;
-        let rewards: AirdropRewards =
-            serde_json::from_str(include_str!("../proposals/airdrop.json")).unwrap();
-        let max_deposit_fits = rewards.0.len() / max_deposit_size + 1;
-        let chunk_deposit_size = rewards.0.len() / max_deposit_fits + 1;
-
-        for (index, chunk) in rewards.0.chunks(chunk_deposit_size).enumerate() {
-            let borsh_input = AirdropParams { rewards: AirdropRewards(chunk.to_vec()) };
-            let borsh_serialized: Vec<u8> = borsh_input.try_to_vec().unwrap();
-            let base64_encoded = near_primitives::serialize::to_base64(borsh_serialized.as_slice());
-            fs::write(format!("proposals/airdrop/deposit{}", index), base64_encoded).unwrap();
-        }
-
-        let max_size = 20;
+        let max_size = 100;
         let rewards: AirdropRewards =
             serde_json::from_str(include_str!("../proposals/airdrop.json")).unwrap();
         let max_fits = rewards.0.len() / max_size + 1;
@@ -332,7 +314,7 @@ mod tests {
             let borsh_input = AirdropParams { rewards: AirdropRewards(chunk.to_vec()) };
             let borsh_serialized: Vec<u8> = borsh_input.try_to_vec().unwrap();
             let base64_encoded = near_primitives::serialize::to_base64(borsh_serialized.as_slice());
-            fs::write(format!("proposals/airdrop/dao{}", index), base64_encoded).unwrap();
+            fs::write(format!("proposals/airdrop/{}", index), base64_encoded).unwrap();
         }
     }
 
