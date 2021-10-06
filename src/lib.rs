@@ -59,7 +59,8 @@ impl Contract {
     }
 
     pub fn add_pending_ft_rewards(&mut self, rewards: Vec<(ValidAccountId, U128)>) {
-        if env::signer_account_id() != self.owner && env::signer_account_id() != self.dao {
+        if env::predecessor_account_id() != self.owner && env::predecessor_account_id() != self.dao
+        {
             panic!("{}", errors::ERR01_UNAUTHORIZED)
         }
         for reward in rewards {
@@ -74,7 +75,8 @@ impl Contract {
     }
 
     pub fn set_pending_ft_rewards(&mut self, rewards: Vec<(ValidAccountId, U128)>) {
-        if env::signer_account_id() != self.owner && env::signer_account_id() != self.dao {
+        if env::predecessor_account_id() != self.owner && env::predecessor_account_id() != self.dao
+        {
             panic!("{}", errors::ERR01_UNAUTHORIZED)
         }
         for reward in rewards {
@@ -109,7 +111,8 @@ impl Contract {
 
     #[payable]
     pub fn airdrop(&mut self, #[serializer(borsh)] rewards: AirdropRewards) {
-        if env::signer_account_id() != self.owner && env::signer_account_id() != self.dao {
+        if env::predecessor_account_id() != self.owner && env::predecessor_account_id() != self.dao
+        {
             panic!("{}", errors::ERR01_UNAUTHORIZED)
         }
         for reward in rewards.0 {
