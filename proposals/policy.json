@@ -1,6 +1,12 @@
 {
   "roles": [
     {
+      "name": "all",
+      "kind": "Everyone",
+      "permissions": ["*:AddProposal"],
+      "vote_policy": {}
+    },
+    {
       "name": "council",
       "kind": {
         "Group": ["marior.near", "within4d45.near", "aliaksandrh.near"]
@@ -47,13 +53,31 @@
           "zhouzihang.near",
           "sanketn81.near",
           "linhdh.near",
-          "sungntung.near"
+          "sungntung.near",
+          "kkkk.near",
+          "zzzz.near",
+          "samtoshi_f_baby.near",
+          "sailinon.near",
+          "itsbrian.near",
+          "vuagiacua.near",
+          "maynor.near",
+          "drtienthanh68.near",
+          "xiangcai.near",
+          "axcoin.near",
+          "nuel.near",
+          "jomashop.near",
+          "zanglee.near",
+          "plusplus.near",
+          "lorettaao.near",
+          "giaphongvks.near",
+          "vnvumn.near"
         ]
       },
       "permissions": [
         "*:VoteReject",
         "*:VoteRemove",
         "*:VoteApprove",
+        "*:AddProposal",
         "*:Finalize"
       ],
       "vote_policy": {}
