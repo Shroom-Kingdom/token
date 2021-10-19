@@ -69,8 +69,8 @@ After proposal succeeds, run airdrop manually:
 
 ```sh
 # fetch eligible accounts
-curl 'https://stats.shroomkingdom.net/mainnet/score-query?offset=0&limit=100000&minlevel=3&stake=1&account_id_like=%25.near&account_id_not_like=%25.%25.near&created_before=1632096000000000000' | jq 'map({ account_id: .account_id, amount: (.level | tostring + "000000000000000000") })' > proposals/airdrop.json
-#curl 'https://stats-testnet.shroomkingdom.net/testnet/score-query?offset=0&limit=100000&minlevel=1' | jq 'map({ account_id: .account_id, amount: (.level | tostring + "000000000000000000") })' > proposals/airdrop.json
+curl 'https://stats.shroomkingdom.net/mainnet/score-query?offset=0&limit=100000&minlevel=3&stake=1&account_id_like=%25.near&account_id_not_like=%25.%25.near&created_before=1633039200000000000' | jq 'map({ account_id: .account_id, amount: (.level * 3 | tostring + "000000000000000000") })' > proposals/airdrop.json
+# curl 'https://stats-testnet.shroomkingdom.net/testnet/score-query?offset=0&limit=100000&minlevel=1' | jq 'map({ account_id: .account_id, amount: (.level * 3 | tostring + "000000000000000000") })' > proposals/airdrop.json
 
 # generate input for airdrop
 cargo test
@@ -81,5 +81,10 @@ for entry in "$search_dir"/*
 do
   ARGS=$(cat $entry)
   near call token.shrm.near airdrop --base64 $ARGS --accountId token.shrm.near --gas 300000000000000
+  rm $entry
 done
+
+# register token in wallet
+# this needs to be done, so that the token gets displayed in the user's wallet
+node proposals/register.js
 ```
