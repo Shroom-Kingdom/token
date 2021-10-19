@@ -124,7 +124,7 @@ impl FungibleTokenMetadataProvider for Contract {
     fn ft_metadata(&self) -> FungibleTokenMetadata {
         FungibleTokenMetadata {
             spec: FT_METADATA_SPEC.to_string(),
-            name: "Shroom Kingdom https://shroomkingdom.net".to_string(),
+            name: "Shroom Kingdom".to_string(),
             symbol: "SHRM".to_string(),
             icon: Some(DATA_IMAGE_ICON.to_string()),
             reference: None,
